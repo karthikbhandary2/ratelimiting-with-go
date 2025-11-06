@@ -241,11 +241,3 @@ For the per-client implementation, you can simulate different clients using prox
 
 ### Per-Client & Token Bucket Implementations
 - `golang.org/x/time v0.14.0`
-
-## License
-
-This project is for educational purposes demonstrating different rate limiting approaches in Go.
-
-## Contributing
-
-Feel free to submit issues and enhancement requests or contribute additional rate limiting implementations and improvements.
