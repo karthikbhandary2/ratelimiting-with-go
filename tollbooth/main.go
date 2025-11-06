@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	tollbooth "github.com/didip/tollbooth/v7"
 )
+
 
 type Message struct {
 	Status string `json:"status"`
@@ -25,8 +27,18 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
 func main() {
-	http.HandleFunc("/ping", rateLimiter(endpointHandler))
+	message := Message{
+				Status: "Request Failed",
+				Body:  "Rate limit exceeded. Please try again later.",
+	}
+	jsonMessage, _ := json.Marshal(message)
+	tollboothLimiter := tollbooth.NewLimiter(1,nil)
+	tollboothLimiter.SetMessage(string(jsonMessage))
+	tollboothLimiter.SetMessageContentType("application/json")
+
+	http.Handle("/ping", tollbooth.LimitFuncHandler(tollboothLimiter, endpointHandler))
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		log.Fatal(err)
